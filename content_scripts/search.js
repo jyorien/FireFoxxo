@@ -1,5 +1,7 @@
 browser.runtime.onMessage.addListener((message) => {
-    console.log(message)
+    // list of engines to display
+    let enginesList = message["enginesList"]
+    console.log(enginesList)
  })
 
 // use to open new tab in a custom query and defined search engine
