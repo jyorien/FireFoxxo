@@ -6,22 +6,57 @@ class HoverPanel {
       document.querySelector("#firefoxxo-hover-panel").remove();
     }
 
-    try {
-      const panel = document.createElement("div");
-      panel.id = "firefoxxo-hover-panel";
-      panel.innerText = "🦊";
+    const panel = document.createElement("div");
+    panel.id = "firefoxxo-hover-panel";
+    panel.innerText = "🦊";
       
-      foxxo.appendChild(panel);
+    foxxo.appendChild(panel);
 
-      this.panel = panel;
-    } catch (e) {
-      console.error(e);
-    }
+    this.panel = panel;
 
   }
 
   updateDisplay(isHovered) {
     this.panel.style.display = isHovered ? "flex" : "none";
+  }
+}
+
+class FoxxoPanel {
+  constructor(foxxo) {
+    if (document.querySelector("#firefoxxo-panel")) {
+      document.querySelector("#firefoxxo-panel").remove();
+    }
+
+    const panel = document.createElement("div");
+    panel.id = "firefoxxo-panel";
+    panel.className = "right";
+    panel.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+      
+    foxxo.appendChild(panel);
+    this.panel = panel;
+
+    const foxxoThonko = document.createElement("div");
+    foxxoThonko.id = "firefoxxo-foxxo-thonko";
+    foxxoThonko.innerText = "🦊 foxxo is thonking... 💭";
+    this.panel.appendChild(foxxoThonko);
+
+  }
+
+  updateDisplay(show) {
+    this.panel.style.display = show ? "flex" : "none";
+
+    const boundingBox = this.panel.getBoundingClientRect();
+    const x = boundingBox.x;
+
+    console.log(x, x + boundingBox.width, window.innerWidth);
+
+    if (x < 0) {
+      this.panel.className = "right";
+    } else if (x + boundingBox.width > window.innerWidth) {
+      this.panel.className = "left";
+    }
   }
 }
 
@@ -33,12 +68,16 @@ class Foxxo {
     ],
     Idle: [
       ...Array.from(Array(14).keys()).map(i => [1, i])
+    ],
+    Sleep: [
+      ...Array.from(Array(6).keys()).map(i => [5, i])
     ]
   };
 
   static STATES = {
     Walk: "Walk",
     Idle: "Idle",
+    Sleep: "Sleep"
   };
 
   constructor() {
@@ -47,8 +86,12 @@ class Foxxo {
     this.state = Foxxo.STATES.Walk;
 
     this.hoverPanel = new HoverPanel(this.foxxoBoxxo);
+    this.panel = new FoxxoPanel(this.foxxoBoxxo);
 
     document.addEventListener("mousemove", (e) => {
+      if (this.state === Foxxo.STATES.Sleep) {
+        return;
+      }
       const isHovered = this.foxxo.matches(":hover");
       const intendedState = isHovered ? Foxxo.STATES.Idle : Foxxo.STATES.Walk;
       if (this.state !== intendedState) {
@@ -57,7 +100,20 @@ class Foxxo {
       this.state = intendedState;
       this.hoverPanel.updateDisplay(isHovered);
     });
-      
+
+    document.addEventListener("click", (e) => {
+      this.panel.updateDisplay(false);
+      this.state = Foxxo.STATES.Idle;
+      this.currFrame = 0;
+    });
+
+    this.foxxo.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.hoverPanel.updateDisplay(false);
+      this.panel.updateDisplay(true);
+      this.state = Foxxo.STATES.Sleep;
+      this.currFrame = 0;
+    });      
 
     this.run();
   }
@@ -127,7 +183,7 @@ class Foxxo {
     let x = 0;
     let dx = this.speed;
     setInterval(() => {
-      if (this.state === Foxxo.STATES.Idle) {
+      if (this.state === Foxxo.STATES.Idle || this.state === Foxxo.STATES.Sleep) {
         return;
       } else {
         if (x > window.innerWidth - 64) {
