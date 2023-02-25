@@ -9,11 +9,22 @@
     "permissions": [
       "activeTab"
     ],
+
+    "content_scripts": [
+      {
+        "matches": ["*://*/*"],
+        "js": ["content_scripts/foxxo.js"]
+      }
+    ],
   
     "browser_action": {
       "default_icon": "icons/foxxo.png",
       "default_title": "FireFoxxo",
       "default_popup": "popup/index.html"
-    }
+    },
+
+    "web_accessible_resources": [
+      "assets/spritesheet.png"
+    ]
   }
   
