@@ -27,22 +27,63 @@ class FoxxoPanel {
       document.querySelector("#firefoxxo-panel").remove();
     }
 
+    this.initPanel(foxxo);
+    this.initSearchPanel();
+
+  }
+
+  initPanel(foxxo) {
     const panel = document.createElement("div");
     panel.id = "firefoxxo-panel";
     panel.className = "right";
     panel.addEventListener("click", (e) => {
       e.stopPropagation();
     });
-      
-    foxxo.appendChild(panel);
-    this.panel = panel;
 
     const foxxoThonko = document.createElement("div");
     foxxoThonko.id = "firefoxxo-foxxo-thonko";
     foxxoThonko.innerText = "🦊 foxxo is thonking... 💭";
-    this.panel.appendChild(foxxoThonko);
+    panel.appendChild(foxxoThonko);
+      
+    foxxo.appendChild(panel);
+    this.panel = panel;
+  }
+
+  initSearchPanel() {
+    const searchGroup = document.createElement("div");
+    searchGroup.id = "firefoxxo-search-group";
+    this.panel.appendChild(searchGroup);
+
+    const searchInput = document.createElement("input");
+    searchInput.id = "firefoxxo-search-input";
+    searchInput.type = "text";
+    searchInput.placeholder = "Search the web";
+    searchGroup.appendChild(searchInput);
+
+    const buttonsGroup = document.createElement("div");
+    buttonsGroup.id = "firefoxxo-buttons-group";
+    searchGroup.appendChild(buttonsGroup);
+
+    (async () => {
+      const enginesList = await browser.storage.local.get("enginesList");
+      const engines = enginesList["enginesList"];
+
+      for (const engine of engines) {
+        const button = document.createElement("button");
+        button.innerText = engine;
+        button.addEventListener("click", (e) => {
+          browser.runtime.sendMessage({
+            url: searchInput.value,
+            engine: engine
+          });
+          searchInput.value = "";
+        });
+        buttonsGroup.appendChild(button);
+      }
+    })();
 
   }
+
 
   updateDisplay(show) {
     this.panel.style.display = show ? "flex" : "none";

@@ -1,6 +1,17 @@
 
-/* Hover Panel Styling */
+#firefoxxo-overlay * {
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+}
 
+#firefoxxo-overlay {
+  z-index: 9999999999999999999;
+}
+
+/* Hover Panel Styling */
 #firefoxxo-hover-panel {
   height: 2rem;
   width: 4rem;
@@ -40,16 +51,14 @@
 
 /* Panel Styling */
 #firefoxxo-panel {
-  height: 200px;
-  width: 400px;
+  width: 360px;
+  padding-bottom: 1.4rem;
 
   position: absolute;
   top: -200px;
   margin: auto;
 
   display: none;
-  align-items: center;
-  justify-content: center;
 
   background-color: white;
   border: 3px solid orange;
@@ -98,4 +107,58 @@
   left: 0.5rem;
 
   color: black;
+}
+
+/* Firefoxxo Search Group */
+#firefoxxo-search-group {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0.8rem;
+  margin-top: 2.4rem;
+}
+
+#firefoxxo-search-group::before {
+  left: 0.1rem;
+  content: "Searching for something?";
+  position: absolute;
+  top: -1.4rem;
+  color: black;
+}
+
+#firefoxxo-search-group input {
+  height: 1.2rem;
+  padding: 0.5rem;
+  border: 2px solid orange;
+  border-radius: 0.5rem;
+  background-color: white;
+  color: black;
+}
+
+#firefoxxo-buttons-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+#firefoxxo-buttons-group button {
+  padding: 0.5rem;
+  cursor: pointer;
+  border: 2px solid orange;
+  border-radius: 0.5rem;
+  background-color: white;
+  color: black;
+  transition: all 0.1s;
+}
+
+#firefoxxo-buttons-group button:hover {
+  transform: scale(1.05);
+  transition: 0.1s; 
+}
+
+#firefoxxo-buttons-group button:active {
+  transform: scale(0.95);
+  transition: 0.1s; 
 }
