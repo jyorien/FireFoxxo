@@ -136,6 +136,7 @@
   border-bottom-left-radius: 0%;
   border-bottom-right-radius: 0%;
   background-color: white;
+  color: black;
   position: relative;
 }
 
@@ -148,6 +149,7 @@
   border-bottom-left-radius: 0%;
   border-bottom-right-radius: 0%;
   background-color: white;
+  color: black;
   position: relative;
 }
 
@@ -215,4 +217,72 @@
 #firefoxxo-buttons-group button:active {
   transform: scale(0.95);
   transition: 0.1s; 
+}
+
+/* Firefoxxo Clipboard Scroller */
+
+#firefoxxo-clipboard-group {
+  width: 100%;
+}
+
+#firefoxxo-clipboard-scroller {
+  height: 132px;
+  max-width: calc(360px - 2rem);
+
+  flex-shrink: 0;
+  flex-grow: 1;
+  margin: 1rem;
+
+  display: grid;
+  grid-auto-flow: column;
+  gap: 1rem;
+  overflow-y: hidden;
+  overflow-x: scroll;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+}
+
+#firefoxxo-clipboard-entry {
+  color: black;
+  position: relative;
+  max-height: 90px;
+  overflow-y: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+  width: calc(360px - 3rem);
+  padding: 0.5rem;
+  background-color: #fffa;
+  scroll-snap-align: center;
+  border-radius: 1rem;
+}
+
+#firefoxxo-clipboard-btn-row {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0.5rem;
+}
+
+#firefoxxo-clipboard-btn-row button {
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border-radius: 1rem;
+  border: 2px solid orange;
+  background-color: white;
+  color: black;
+  transition: all 0.1s;
+}
+
+#firefoxxo-clipboard-btn-row button:hover {
+  transform: scale(1.05);
+  transition: all 0.1s;
+}
+
+#firefoxxo-clipboard-btn-row button:active {
+  transform: scale(0.95);
+  transition: all 0.1s;
 }

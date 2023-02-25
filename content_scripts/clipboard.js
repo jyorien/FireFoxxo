@@ -11,11 +11,11 @@ document.addEventListener('copy', (e) => {
             if (clipboard_history == undefined) {
                 clipboard_history = []
             }
-            console.log("clipboard_history", clipboard_history)
+            // console.log("clipboard_history", clipboard_history)
 
         clipboard_history = [lastCopied, ...clipboard_history]
-        console.log(clipboard_history)
-        browser.storage.local.set({"clipboard_history": clipboard_history})
+        // console.log(clipboard_history)
+        browser.storage.local.set({"clipboard_history": clipboard_history}).then((val) => {}, (err) => {console.log(err)})
     })
     e.preventDefault();
  });

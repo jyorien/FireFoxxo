@@ -29,6 +29,7 @@ class FoxxoPanel {
 
     this.initPanel(foxxo);
     this.searchGroup = this.initSearchPanel();
+    this.clipboardGroup = this.initClipboardPanel();
     this.switchTab("Search");
 
   }
@@ -136,8 +137,81 @@ class FoxxoPanel {
 
   }
 
+  initClipboardPanel() {
+    const clipboardGroup = document.createElement("div");
+    clipboardGroup.id = "firefoxxo-clipboard-group";
+
+    const updateClipboard = this.updateClipboard.bind(this);
+
+    browser.storage.onChanged.addListener((changes, areaName) => {
+      if (changes["clipboard_history"] && areaName === "local") {
+        updateClipboard(changes["clipboard_history"].newValue);
+      }
+    });
+
+    this.panel.appendChild(clipboardGroup);
+
+    (async () => {
+      const clipboardHistory = await browser.storage.local.get("clipboard_history");
+      updateClipboard(clipboardHistory["clipboard_history"]);
+    })();
+
+    return clipboardGroup;
+  }
+
+  updateClipboard(clipboard) {
+    this.clipboardGroup.innerHTML = "";
+    
+    const clipboardScroller = document.createElement("div");
+    clipboardScroller.id = "firefoxxo-clipboard-scroller";
+    this.clipboardGroup.appendChild(clipboardScroller);
+
+    if (clipboard === undefined || clipboard.length === 0) {
+      const emptyClipboard = document.createElement("div");
+      emptyClipboard.id = "firefoxxo-clipboard-entry";
+      emptyClipboard.innerText = "Clipboard is empty";
+      clipboardScroller.appendChild(emptyClipboard);
+    } else {
+      clipboard.forEach((entry, index) => {
+        const clipboardEntry = document.createElement("div");
+        clipboardEntry.id = "firefoxxo-clipboard-entry";
+        clipboardEntry.innerText = entry;
+
+        const btnRow = document.createElement("div");
+        btnRow.id = "firefoxxo-clipboard-btn-row";
+        clipboardEntry.appendChild(btnRow);
+
+        const copyBtn = document.createElement("button");
+        copyBtn.innerText = "Copy";
+        btnRow.appendChild(copyBtn);
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerText = "Delete";
+        btnRow.appendChild(deleteBtn);
+
+        deleteBtn.addEventListener("click", (e) => {
+          browser.storage.local.get("clipboard_history").then((res) => {
+            console.log(res);
+            const newClipboard = res["clipboard_history"];
+            newClipboard.splice(index, 1);
+            console.log(newClipboard);
+            browser.storage.local.set({"clipboard_history": newClipboard}).then((val) => {}, (err) => {console.log(err)});
+          });
+        });
+
+        copyBtn.addEventListener("click", (e) => {
+          navigator.clipboard.writeText(entry);
+        });
+
+        clipboardScroller.appendChild(clipboardEntry);
+      });
+    }
+
+  }
+
   switchTab(tab) {
     this.searchGroup.style.display = tab === "Search" ? "flex" : "none";
+    this.clipboardGroup.style.display = tab === "Clipboard" ? "flex" : "none";
   }
 
 
@@ -146,8 +220,6 @@ class FoxxoPanel {
 
     const boundingBox = this.panel.getBoundingClientRect();
     const x = boundingBox.x;
-
-    console.log(x, x + boundingBox.width, window.innerWidth);
 
     if (x < 0) {
       this.panel.className = "right";
