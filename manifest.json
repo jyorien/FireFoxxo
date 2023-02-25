@@ -21,7 +21,7 @@
     ],
 
     "background": {
-      "scripts": ["background_scripts/search.js", "background_scripts/screen_time.js"]
+      "scripts": ["background_scripts/search.js", "background_scripts/screen_time.js", "background_scripts/tab_count.js"]
     },
 
     "browser_action": {
