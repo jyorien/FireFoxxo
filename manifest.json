@@ -11,11 +11,12 @@
       "storage",
       "search"
     ],
-  
+
     "content_scripts": [
       {
-        "matches": ["*://*/**"],
-        "js": ["content_scripts/clipboard.js", "content_scripts/search.js"]
+        "matches": ["*://*/*"],
+        "js": ["content_scripts/foxxo.js", "content_scripts/clipboard.js", "content_scripts/search.js"],
+        "css": ["content_scripts/foxxo.css"]
       }
     ],
 
@@ -27,12 +28,6 @@
       "default_icon": "icons/foxxo.png",
       "default_title": "FireFoxxo",
       "default_popup": "popup/index.html"
-    },
-
-    "browser_specific_settings": {
-      "gecko": {
-        "id": "firefoxxo@example.com"
-      }
     }
   }
   

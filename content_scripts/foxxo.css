@@ -1,0 +1,101 @@
+
+/* Hover Panel Styling */
+
+#firefoxxo-hover-panel {
+  height: 2rem;
+  width: 4rem;
+
+  position: absolute;
+  margin: auto;
+  top: -1rem;
+  left: 0;
+  right: 0;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  background-color: white;
+  border: 3px solid orange;
+  border-radius: 1rem;
+
+}
+
+#firefoxxo-hover-panel::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -15px;
+  margin: auto;
+  z-index: 1;
+  display: block;
+  width: 0;
+
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px;
+  border-top: 5px orange solid;
+}
+
+/* Panel Styling */
+#firefoxxo-panel {
+  height: 200px;
+  width: 400px;
+
+  position: absolute;
+  top: -200px;
+  margin: auto;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  background-color: white;
+  border: 3px solid orange;
+  border-radius: 1rem;
+  pointer-events: all;
+}
+
+.right#firefoxxo-panel { left: 0; }
+.left#firefoxxo-panel { right: 0; }
+
+#firefoxxo-panel::after {
+  content: "";
+  position: absolute;
+  bottom: -25px;
+
+  width: 0.8rem;
+  height: 0.8rem;
+
+  border-radius: 100%;
+  background-color: white;
+  border: 2px solid orange;
+}
+
+.right#firefoxxo-panel::after { left: 5px; }
+.left#firefoxxo-panel::after { right: 5px; }
+
+#firefoxxo-panel::before {
+  content: "";
+  position: absolute;
+  bottom: -28px;
+
+  width: 0.4rem;
+  height: 0.4rem;
+
+  border-radius: 100%;
+  background-color: white;
+  border: 2px solid orange;
+}
+
+.right#firefoxxo-panel::before { left: 25px; }
+.left#firefoxxo-panel::before { right: 25px; }
+
+#firefoxxo-foxxo-thonko {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem;
+
+  color: black;
+}
