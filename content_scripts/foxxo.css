@@ -296,3 +296,8 @@
   margin: 0.8rem;
   color: black;
 }
+
+#firefoxxo-tabs-counts-group {
+  display: flex;
+  gap: 1rem;
+}

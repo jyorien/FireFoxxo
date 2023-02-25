@@ -227,17 +227,62 @@ class FoxxoPanel {
     screenTime.id = "firefoxxo-screen-time";
     screenTimeGroup.appendChild(screenTime);
 
+    const tabsCountGroup = document.createElement("div");
+    tabsCountGroup.id = "firefoxxo-tabs-count-group";
+    statsGroup.appendChild(tabsCountGroup);
+
+    const tabsCountLabel = document.createElement("h4");
+    tabsCountLabel.innerText = "Tabs Opened";
+    tabsCountGroup.appendChild(tabsCountLabel);
+
+    const tabsCountsGroup = document.createElement("div");
+    tabsCountsGroup.id = "firefoxxo-tabs-counts-group";
+    tabsCountGroup.appendChild(tabsCountsGroup);
+
+    const todayTabsCountGroup = document.createElement("div");
+    todayTabsCountGroup.id = "firefoxxo-today-tabs-count-group";
+    tabsCountsGroup.appendChild(todayTabsCountGroup);
+
+    const todayTabsCountLabel = document.createElement("h4");
+    todayTabsCountLabel.innerText = "Today";
+    todayTabsCountGroup.appendChild(todayTabsCountLabel);
+
+    const todayTabsCount = document.createElement("p");
+    todayTabsCount.id = "firefoxxo-today-tabs-count";
+    todayTabsCountGroup.appendChild(todayTabsCount);
+
+    const lifetimeTabsCountGroup = document.createElement("div");
+    lifetimeTabsCountGroup.id = "firefoxxo-lifetime-tabs-count-group";
+    tabsCountsGroup.appendChild(lifetimeTabsCountGroup);
+
+    const lifetimeTabsCountLabel = document.createElement("h4");
+    lifetimeTabsCountLabel.innerText = "Lifetime";
+    lifetimeTabsCountGroup.appendChild(lifetimeTabsCountLabel);
+
+    const lifetimeTabsCount = document.createElement("p");
+    lifetimeTabsCount.id = "firefoxxo-lifetime-tabs-count";
+    lifetimeTabsCountGroup.appendChild(lifetimeTabsCount);
+
+    const updateTabsCount = this.updateTabsCount.bind(this);
+
     const updateScreenTime = this.updateScreenTime.bind(this);
 
     browser.storage.onChanged.addListener((changes, areaName) => {
       if (changes["screen_time"] && areaName === "local") {
         updateScreenTime(changes["screen_time"].newValue);
+      } else if (changes["tab_count"] && areaName === "local") {
+        updateTabsCount(changes["tab_count"].newValue);
       }
     });
 
     (async () => {
       const res = await browser.storage.local.get("screen_time");
       updateScreenTime(res["screen_time"]);
+    })();
+
+    (async () => {
+      const res = await browser.storage.local.get("tab_count");
+      updateTabsCount(res["tab_count"]);
     })();
 
     return statsGroup;
@@ -253,6 +298,12 @@ class FoxxoPanel {
     this.statsGroup.querySelector("#firefoxxo-screen-time").innerText = `${hours} hours, ${minutes} minutes, ${remainingSeconds} seconds`;
 
   }
+
+  updateTabsCount(tabsCount) {
+    this.statsGroup.querySelector("#firefoxxo-today-tabs-count").innerText = tabsCount.tab_count_daily;
+    this.statsGroup.querySelector("#firefoxxo-lifetime-tabs-count").innerText = tabsCount.tab_count_lifetime;
+  }
+
 
   switchTab(tab) {
     this.searchGroup.style.display = tab === "Search" ? "flex" : "none";
