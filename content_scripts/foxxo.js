@@ -3,20 +3,32 @@ class Foxxo {
 
   static FRAMES = {
     Walk: [
-      [2, 0],
-      [2, 1],
-      [2, 2],
-      [2, 3],
-      [2, 4],
-      [2, 5],
-      [2, 6],
-      [2, 7]
+      ...Array.from(Array(8).keys()).map(i => [2, i])
+    ],
+    Idle: [
+      ...Array.from(Array(14).keys()).map(i => [1, i])
     ]
-  }  
+  };
+
+  static STATES = {
+    Walk: "Walk",
+    Idle: "Idle",
+  };
 
   constructor() {
     [this.foxxo, this.spritesheet] = this.initFoxxo();
     this.speed = 1;
+    this.state = Foxxo.STATES.Walk;
+
+    document.addEventListener("mousemove", (e) => {
+      const intendedState = this.foxxo.matches(":hover") ? Foxxo.STATES.Idle : Foxxo.STATES.Walk;
+      if (this.state !== intendedState) {
+        this.currFrame = 0;
+      }
+      this.state = intendedState;
+    });
+      
+
     this.run();
   }
 
@@ -43,10 +55,12 @@ class Foxxo {
     foxxo.style.position = "absolute";
     foxxo.style.bottom = "0";
     foxxo.style.left = "0";
+    foxxo.style.pointerEvents = "auto";
     foxxoOverlay.appendChild(foxxo);
   
     const spritesheet = document.createElement("img");
     spritesheet.src = browser.runtime.getURL("assets/spritesheet.png");
+    spritesheet.draggable = false;
     spritesheet.style.position = "absolute";
     spritesheet.style.top = "0";
     spritesheet.style.left = "0";
@@ -61,9 +75,9 @@ class Foxxo {
   }
 
   animate() {
-    const frames = Foxxo.FRAMES.Walk;
     this.currFrame = 0;
     setInterval(() => {
+      const frames = Foxxo.FRAMES[this.state];
       const [x, y] = frames[this.currFrame];
       this.setSprite(x, y);
       this.currFrame = (this.currFrame + 1) % frames.length;
@@ -74,15 +88,19 @@ class Foxxo {
     let x = 0;
     let dx = this.speed;
     setInterval(() => {
-      if (x > window.innerWidth - 64) {
-        dx = -this.speed;
-        this.foxxo.style.transform = "scaleX(-1)";
-      } else if (x < 0) {
-        dx = this.speed
-        this.foxxo.style.transform = "scaleX(1)";
+      if (this.state === Foxxo.STATES.Idle) {
+        return;
+      } else {
+        if (x > window.innerWidth - 64) {
+          dx = -this.speed;
+          this.foxxo.style.transform = "scaleX(-1)";
+        } else if (x < 0) {
+          dx = this.speed
+          this.foxxo.style.transform = "scaleX(1)";
+        }
+        x += dx;
+        this.foxxo.style.left = `${x}px`;
       }
-      x += dx;
-      this.foxxo.style.left = `${x}px`;
     }, 10);
   }
 
