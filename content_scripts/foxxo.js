@@ -28,7 +28,8 @@ class FoxxoPanel {
     }
 
     this.initPanel(foxxo);
-    this.initSearchPanel();
+    this.searchGroup = this.initSearchPanel();
+    this.switchTab("Search");
 
   }
 
@@ -44,6 +45,55 @@ class FoxxoPanel {
     foxxoThonko.id = "firefoxxo-foxxo-thonko";
     foxxoThonko.innerText = "🦊 foxxo is thonking... 💭";
     panel.appendChild(foxxoThonko);
+
+    const foxxoTabs = document.createElement("div");
+    foxxoTabs.id = "firefoxxo-foxxo-tabs";
+    panel.appendChild(foxxoTabs);
+
+    const switchTab = this.switchTab.bind(this);
+
+    const tabs = [];
+
+    for (const tab of ["Search", "Clipboard"]) {
+
+      const foxxoTab = document.createElement("div");
+      foxxoTab.className = "firefoxxo-foxxo-tab";
+      foxxoTabs.appendChild(foxxoTab);
+
+      const foxxoTabPresser = document.createElement("button");
+      foxxoTabPresser.className = "firefoxxo-foxxo-tab-presser";
+      foxxoTabPresser.innerText = tab;
+      foxxoTab.appendChild(foxxoTabPresser);
+
+      if (foxxoTabPresser.innerText === "Search") {
+        foxxoTabPresser.classList.add("active");
+      }
+
+      foxxoTabPresser.addEventListener("click", (e) => {
+        document.querySelectorAll(".firefoxxo-foxxo-tab-presser").forEach((el) => {
+          el.classList.remove("active");
+        });
+        e.target.classList.add("active");
+        switchTab(tab);
+      });
+
+      const tabFoxxo = document.createElement("div");
+      tabFoxxo.className = "firefoxxo-tab-foxxo";
+      foxxoTab.appendChild(tabFoxxo);
+
+      const tabFoxxoSprite = document.createElement("img");
+      tabFoxxoSprite.src = browser.runtime.getURL("assets/spritesheet.png");
+      tabFoxxoSprite.draggable = false;
+      tabFoxxoSprite.style.position = "absolute";
+      tabFoxxoSprite.style.top = `-${3 * 64}px`;
+      tabFoxxoSprite.style.left = `-${2 * 64}px`;
+      tabFoxxo.appendChild(tabFoxxoSprite);
+
+      tabs.push(foxxoTabPresser);
+
+    }
+
+    this.tabs = tabs;
       
     foxxo.appendChild(panel);
     this.panel = panel;
@@ -82,6 +132,12 @@ class FoxxoPanel {
       }
     })();
 
+    return searchGroup;
+
+  }
+
+  switchTab(tab) {
+    this.searchGroup.style.display = tab === "Search" ? "flex" : "none";
   }
 
 
