@@ -7,25 +7,27 @@
     "homepage_url": "https://github.com/mdn/webextensions-examples/tree/master/beastify",
   
     "permissions": [
-      "activeTab"
+      "activeTab",
+      "storage",
+      "search"
     ],
 
     "content_scripts": [
       {
         "matches": ["*://*/*"],
-        "js": ["content_scripts/foxxo.js"],
+        "js": ["content_scripts/foxxo.js", "content_scripts/clipboard.js", "content_scripts/search.js"],
         "css": ["content_scripts/foxxo.css"]
       }
     ],
-  
+
+    "background": {
+      "scripts": ["background_scripts/search.js"]
+    },
+
     "browser_action": {
       "default_icon": "icons/foxxo.png",
       "default_title": "FireFoxxo",
       "default_popup": "popup/index.html"
-    },
-
-    "web_accessible_resources": [
-      "assets/spritesheet.png"
-    ]
+    }
   }
   

@@ -1,16 +1,23 @@
 html,
 body {
-  width: 100px;
+  width: 300px;
 }
 
 .hidden {
   display: none;
 }
+#popup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.copybtn {
+  display: flex;
+  gap: 20px;
+}
 
 button {
   border: none;
-  width: 100%;
-  margin: 3% auto;
   padding: 4px;
   text-align: center;
   font-size: 1.5em;
@@ -20,12 +27,4 @@ button {
 
 button:hover {
   background-color: #CFF2F2;
-}
-
-button[type="reset"] {
-  background-color: #FBFBC9;
-}
-
-button[type="reset"]:hover {
-  background-color: #EAEA9D;
 }
