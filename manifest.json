@@ -7,7 +7,8 @@
     "homepage_url": "https://github.com/mdn/webextensions-examples/tree/master/beastify",
   
     "permissions": [
-      "activeTab"
+      "activeTab",
+      "storage"
     ],
   
     "content_scripts": [
@@ -16,10 +17,17 @@
         "js": ["content_scripts/clipboard.js"]
       }
     ],
+
     "browser_action": {
       "default_icon": "icons/foxxo.png",
       "default_title": "FireFoxxo",
       "default_popup": "popup/index.html"
+    },
+
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "firefoxxo@example.com"
+      }
     }
   }
   

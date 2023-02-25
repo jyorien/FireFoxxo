@@ -1,19 +1,21 @@
-document.addEventListener('copy', function(e){
+document.addEventListener('copy', (e) => {
     const selection = document.getSelection()
     e.clipboardData.setData("text/plain", selection.toString());
 
     let lastCopied = e.clipboardData.getData("text/plain")
     console.log("lastCopied", lastCopied)
-    let currentItems = localStorage.getItem("clipboard_history")
-    if (currentItems == null) {
-        currentItems = []
-    } else {
-        currentItems = JSON.parse(currentItems)
-    }
-    console.log("currentItems", currentItems)
-    currentItems = [lastCopied, ...currentItems]
-    currentItems = JSON.stringify(currentItems)
-    localStorage.setItem("clipboard_history", currentItems)
-    console.log(localStorage.getItem("clipboard_history"))
+
+    browser.storage.local.get("clipboard_history")
+        .then((currentItems) => {
+            let clipboard_history = currentItems["clipboard_history"]
+            if (clipboard_history == undefined) {
+                clipboard_history = []
+            }
+            console.log("clipboard_history", clipboard_history)
+
+        clipboard_history = [lastCopied, ...clipboard_history]
+        console.log(clipboard_history)
+        browser.storage.local.set({"clipboard_history": clipboard_history})
+    })
     e.preventDefault();
  });
