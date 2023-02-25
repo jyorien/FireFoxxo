@@ -8,15 +8,20 @@
   
     "permissions": [
       "activeTab",
-      "storage"
+      "storage",
+      "search"
     ],
   
     "content_scripts": [
       {
         "matches": ["*://*/**"],
-        "js": ["content_scripts/clipboard.js"]
+        "js": ["content_scripts/clipboard.js", "content_scripts/search.js"]
       }
     ],
+
+    "background": {
+      "scripts": ["background_scripts/search.js"]
+    },
 
     "browser_action": {
       "default_icon": "icons/foxxo.png",
