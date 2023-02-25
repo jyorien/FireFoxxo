@@ -15,13 +15,13 @@
     "content_scripts": [
       {
         "matches": ["*://*/*"],
-        "js": ["content_scripts/foxxo.js", "content_scripts/clipboard.js", "content_scripts/search.js"],
+        "js": ["content_scripts/foxxo.js", "content_scripts/clipboard.js", "content_scripts/search.js", "content_scripts/screen_time.js"],
         "css": ["content_scripts/foxxo.css"]
       }
     ],
 
     "background": {
-      "scripts": ["background_scripts/search.js"]
+      "scripts": ["background_scripts/search.js", "background_scripts/screen_time.js"]
     },
 
     "browser_action": {
