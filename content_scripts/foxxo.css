@@ -286,3 +286,13 @@
   transform: scale(0.95);
   transition: all 0.1s;
 }
+
+/* Firefoxxo Stats Panel */
+#firefoxxo-stats-group {
+  height: 132px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0.8rem;
+  color: black;
+}

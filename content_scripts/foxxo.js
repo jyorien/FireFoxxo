@@ -30,6 +30,7 @@ class FoxxoPanel {
     this.initPanel(foxxo);
     this.searchGroup = this.initSearchPanel();
     this.clipboardGroup = this.initClipboardPanel();
+    this.statsGroup = this.initStatsPanel();
     this.switchTab("Search");
 
   }
@@ -55,7 +56,7 @@ class FoxxoPanel {
 
     const tabs = [];
 
-    for (const tab of ["Search", "Clipboard"]) {
+    for (const tab of ["Search", "Clipboard", "Stats"]) {
 
       const foxxoTab = document.createElement("div");
       foxxoTab.className = "firefoxxo-foxxo-tab";
@@ -209,9 +210,54 @@ class FoxxoPanel {
 
   }
 
+  initStatsPanel() {
+    const statsGroup = document.createElement("div");
+    statsGroup.id = "firefoxxo-stats-group";
+    this.panel.appendChild(statsGroup);
+
+    const screenTimeGroup = document.createElement("div");
+    screenTimeGroup.id = "firefoxxo-screen-time-group";
+    statsGroup.appendChild(screenTimeGroup);
+
+    const screenTimeLabel = document.createElement("h4");
+    screenTimeLabel.innerText = "Screen Time Today";
+    screenTimeGroup.appendChild(screenTimeLabel);
+
+    const screenTime = document.createElement("p");
+    screenTime.id = "firefoxxo-screen-time";
+    screenTimeGroup.appendChild(screenTime);
+
+    const updateScreenTime = this.updateScreenTime.bind(this);
+
+    browser.storage.onChanged.addListener((changes, areaName) => {
+      if (changes["screen_time"] && areaName === "local") {
+        updateScreenTime(changes["screen_time"].newValue);
+      }
+    });
+
+    (async () => {
+      const res = await browser.storage.local.get("screen_time");
+      updateScreenTime(res["screen_time"]);
+    })();
+
+    return statsGroup;
+  }
+
+  updateScreenTime(screenTime) {
+
+    let seconds = Math.floor(screenTime);
+    let hours = Math.floor(seconds / 3600);
+    let minutes = Math.floor((seconds % 3600) / 60);
+    let remainingSeconds = seconds % 60;
+
+    this.statsGroup.querySelector("#firefoxxo-screen-time").innerText = `${hours} hours, ${minutes} minutes, ${remainingSeconds} seconds`;
+
+  }
+
   switchTab(tab) {
     this.searchGroup.style.display = tab === "Search" ? "flex" : "none";
     this.clipboardGroup.style.display = tab === "Clipboard" ? "flex" : "none";
+    this.statsGroup.style.display = tab === "Stats" ? "flex" : "none";
   }
 
 
