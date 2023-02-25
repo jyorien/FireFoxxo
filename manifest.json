@@ -13,7 +13,8 @@
     "content_scripts": [
       {
         "matches": ["*://*/*"],
-        "js": ["content_scripts/foxxo.js"]
+        "js": ["content_scripts/foxxo.js"],
+        "css": ["content_scripts/foxxo.css"]
       }
     ],
   

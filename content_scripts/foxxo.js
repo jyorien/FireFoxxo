@@ -1,4 +1,30 @@
 
+class HoverPanel {
+  constructor(foxxo) {
+
+    if (document.querySelector("#firefoxxo-hover-panel")) {
+      document.querySelector("#firefoxxo-hover-panel").remove();
+    }
+
+    try {
+      const panel = document.createElement("div");
+      panel.id = "firefoxxo-hover-panel";
+      panel.innerText = "🦊";
+      
+      foxxo.appendChild(panel);
+
+      this.panel = panel;
+    } catch (e) {
+      console.error(e);
+    }
+
+  }
+
+  updateDisplay(isHovered) {
+    this.panel.style.display = isHovered ? "flex" : "none";
+  }
+}
+
 class Foxxo {
 
   static FRAMES = {
@@ -16,16 +42,20 @@ class Foxxo {
   };
 
   constructor() {
-    [this.foxxo, this.spritesheet] = this.initFoxxo();
+    [this.foxxoBoxxo, this.foxxo, this.spritesheet] = this.initFoxxo();
     this.speed = 1;
     this.state = Foxxo.STATES.Walk;
 
+    this.hoverPanel = new HoverPanel(this.foxxoBoxxo);
+
     document.addEventListener("mousemove", (e) => {
-      const intendedState = this.foxxo.matches(":hover") ? Foxxo.STATES.Idle : Foxxo.STATES.Walk;
+      const isHovered = this.foxxo.matches(":hover");
+      const intendedState = isHovered ? Foxxo.STATES.Idle : Foxxo.STATES.Walk;
       if (this.state !== intendedState) {
         this.currFrame = 0;
       }
       this.state = intendedState;
+      this.hoverPanel.updateDisplay(isHovered);
     });
       
 
@@ -40,6 +70,7 @@ class Foxxo {
   
     const foxxoOverlay = document.createElement("div");
     foxxoOverlay.id = "firefoxxo-overlay";
+    foxxoOverlay.style.boxSizing = "border-box";
     foxxoOverlay.style.height = "100vh";
     foxxoOverlay.style.width = "100vw";
     foxxoOverlay.style.pointerEvents = "none";
@@ -47,6 +78,14 @@ class Foxxo {
     foxxoOverlay.style.top = "0";
     foxxoOverlay.style.left = "0";
     document.body.appendChild(foxxoOverlay);
+
+    const foxxoBoxxo = document.createElement("div");
+    foxxoBoxxo.style.height = "64px";
+    foxxoBoxxo.style.width = "64px";
+    foxxoBoxxo.style.position = "absolute";
+    foxxoBoxxo.style.bottom = "0";
+    foxxoBoxxo.style.left = "0";
+    foxxoOverlay.appendChild(foxxoBoxxo);
   
     const foxxo = document.createElement("div");
     foxxo.style.height = "64px";
@@ -56,7 +95,7 @@ class Foxxo {
     foxxo.style.bottom = "0";
     foxxo.style.left = "0";
     foxxo.style.pointerEvents = "auto";
-    foxxoOverlay.appendChild(foxxo);
+    foxxoBoxxo.appendChild(foxxo);
   
     const spritesheet = document.createElement("img");
     spritesheet.src = browser.runtime.getURL("assets/spritesheet.png");
@@ -66,7 +105,7 @@ class Foxxo {
     spritesheet.style.left = "0";
     foxxo.appendChild(spritesheet);
 
-    return [foxxo, spritesheet];
+    return [foxxoBoxxo, foxxo, spritesheet];
   }
 
   setSprite(row, col) {
@@ -99,7 +138,7 @@ class Foxxo {
           this.foxxo.style.transform = "scaleX(1)";
         }
         x += dx;
-        this.foxxo.style.left = `${x}px`;
+        this.foxxoBoxxo.style.left = `${x}px`;
       }
     }, 10);
   }
@@ -119,5 +158,9 @@ class Foxxo {
   if (window.foxxoExists) {
     return;
   }
-  new Foxxo();
+  try {
+    new Foxxo();
+  } catch (e) {
+    console.error(e);
+  }
 })();
