@@ -27,30 +27,245 @@ class FoxxoPanel {
       document.querySelector("#firefoxxo-panel").remove();
     }
 
+    this.initPanel(foxxo);
+    this.searchGroup = this.initSearchPanel();
+    this.clipboardGroup = this.initClipboardPanel();
+    this.statsGroup = this.initStatsPanel();
+    this.switchTab("Search");
+
+  }
+
+  initPanel(foxxo) {
     const panel = document.createElement("div");
     panel.id = "firefoxxo-panel";
     panel.className = "right";
     panel.addEventListener("click", (e) => {
       e.stopPropagation();
     });
-      
-    foxxo.appendChild(panel);
-    this.panel = panel;
 
     const foxxoThonko = document.createElement("div");
     foxxoThonko.id = "firefoxxo-foxxo-thonko";
     foxxoThonko.innerText = "🦊 foxxo is thonking... 💭";
-    this.panel.appendChild(foxxoThonko);
+    panel.appendChild(foxxoThonko);
+
+    const foxxoTabs = document.createElement("div");
+    foxxoTabs.id = "firefoxxo-foxxo-tabs";
+    panel.appendChild(foxxoTabs);
+
+    const switchTab = this.switchTab.bind(this);
+
+    const tabs = [];
+
+    for (const tab of ["Search", "Clipboard", "Stats"]) {
+
+      const foxxoTab = document.createElement("div");
+      foxxoTab.className = "firefoxxo-foxxo-tab";
+      foxxoTabs.appendChild(foxxoTab);
+
+      const foxxoTabPresser = document.createElement("button");
+      foxxoTabPresser.className = "firefoxxo-foxxo-tab-presser";
+      foxxoTabPresser.innerText = tab;
+      foxxoTab.appendChild(foxxoTabPresser);
+
+      if (foxxoTabPresser.innerText === "Search") {
+        foxxoTabPresser.classList.add("active");
+      }
+
+      foxxoTabPresser.addEventListener("click", (e) => {
+        document.querySelectorAll(".firefoxxo-foxxo-tab-presser").forEach((el) => {
+          el.classList.remove("active");
+        });
+        e.target.classList.add("active");
+        switchTab(tab);
+      });
+
+      const tabFoxxo = document.createElement("div");
+      tabFoxxo.className = "firefoxxo-tab-foxxo";
+      foxxoTab.appendChild(tabFoxxo);
+
+      const tabFoxxoSprite = document.createElement("img");
+      tabFoxxoSprite.src = browser.runtime.getURL("assets/spritesheet.png");
+      tabFoxxoSprite.draggable = false;
+      tabFoxxoSprite.style.position = "absolute";
+      tabFoxxoSprite.style.top = `-${3 * 64}px`;
+      tabFoxxoSprite.style.left = `-${2 * 64}px`;
+      tabFoxxo.appendChild(tabFoxxoSprite);
+
+      tabs.push(foxxoTabPresser);
+
+    }
+
+    this.tabs = tabs;
+      
+    foxxo.appendChild(panel);
+    this.panel = panel;
+  }
+
+  initSearchPanel() {
+    const searchGroup = document.createElement("div");
+    searchGroup.id = "firefoxxo-search-group";
+    this.panel.appendChild(searchGroup);
+
+    const searchInput = document.createElement("input");
+    searchInput.id = "firefoxxo-search-input";
+    searchInput.type = "text";
+    searchInput.placeholder = "Search the web";
+    searchGroup.appendChild(searchInput);
+
+    const buttonsGroup = document.createElement("div");
+    buttonsGroup.id = "firefoxxo-buttons-group";
+    searchGroup.appendChild(buttonsGroup);
+
+    (async () => {
+      const enginesList = await browser.storage.local.get("enginesList");
+      const engines = enginesList["enginesList"];
+
+      for (const engine of engines) {
+        const button = document.createElement("button");
+        button.innerText = engine;
+        button.addEventListener("click", (e) => {
+          browser.runtime.sendMessage({
+            url: searchInput.value,
+            engine: engine
+          });
+          searchInput.value = "";
+        });
+        buttonsGroup.appendChild(button);
+      }
+    })();
+
+    return searchGroup;
 
   }
+
+  initClipboardPanel() {
+    const clipboardGroup = document.createElement("div");
+    clipboardGroup.id = "firefoxxo-clipboard-group";
+
+    const updateClipboard = this.updateClipboard.bind(this);
+
+    browser.storage.onChanged.addListener((changes, areaName) => {
+      if (changes["clipboard_history"] && areaName === "local") {
+        updateClipboard(changes["clipboard_history"].newValue);
+      }
+    });
+
+    this.panel.appendChild(clipboardGroup);
+
+    (async () => {
+      const clipboardHistory = await browser.storage.local.get("clipboard_history");
+      updateClipboard(clipboardHistory["clipboard_history"]);
+    })();
+
+    return clipboardGroup;
+  }
+
+  updateClipboard(clipboard) {
+    this.clipboardGroup.innerHTML = "";
+    
+    const clipboardScroller = document.createElement("div");
+    clipboardScroller.id = "firefoxxo-clipboard-scroller";
+    this.clipboardGroup.appendChild(clipboardScroller);
+
+    if (clipboard === undefined || clipboard.length === 0) {
+      const emptyClipboard = document.createElement("div");
+      emptyClipboard.id = "firefoxxo-clipboard-entry";
+      emptyClipboard.innerText = "Clipboard is empty";
+      clipboardScroller.appendChild(emptyClipboard);
+    } else {
+      clipboard.forEach((entry, index) => {
+        const clipboardEntry = document.createElement("div");
+        clipboardEntry.id = "firefoxxo-clipboard-entry";
+        clipboardEntry.innerText = entry;
+
+        const btnRow = document.createElement("div");
+        btnRow.id = "firefoxxo-clipboard-btn-row";
+        clipboardEntry.appendChild(btnRow);
+
+        const copyBtn = document.createElement("button");
+        copyBtn.innerText = "Copy";
+        btnRow.appendChild(copyBtn);
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerText = "Delete";
+        btnRow.appendChild(deleteBtn);
+
+        deleteBtn.addEventListener("click", (e) => {
+          browser.storage.local.get("clipboard_history").then((res) => {
+            console.log(res);
+            const newClipboard = res["clipboard_history"];
+            newClipboard.splice(index, 1);
+            console.log(newClipboard);
+            browser.storage.local.set({"clipboard_history": newClipboard}).then((val) => {}, (err) => {console.log(err)});
+          });
+        });
+
+        copyBtn.addEventListener("click", (e) => {
+          navigator.clipboard.writeText(entry);
+        });
+
+        clipboardScroller.appendChild(clipboardEntry);
+      });
+    }
+
+  }
+
+  initStatsPanel() {
+    const statsGroup = document.createElement("div");
+    statsGroup.id = "firefoxxo-stats-group";
+    this.panel.appendChild(statsGroup);
+
+    const screenTimeGroup = document.createElement("div");
+    screenTimeGroup.id = "firefoxxo-screen-time-group";
+    statsGroup.appendChild(screenTimeGroup);
+
+    const screenTimeLabel = document.createElement("h4");
+    screenTimeLabel.innerText = "Screen Time Today";
+    screenTimeGroup.appendChild(screenTimeLabel);
+
+    const screenTime = document.createElement("p");
+    screenTime.id = "firefoxxo-screen-time";
+    screenTimeGroup.appendChild(screenTime);
+
+    const updateScreenTime = this.updateScreenTime.bind(this);
+
+    browser.storage.onChanged.addListener((changes, areaName) => {
+      if (changes["screen_time"] && areaName === "local") {
+        updateScreenTime(changes["screen_time"].newValue);
+      }
+    });
+
+    (async () => {
+      const res = await browser.storage.local.get("screen_time");
+      updateScreenTime(res["screen_time"]);
+    })();
+
+    return statsGroup;
+  }
+
+  updateScreenTime(screenTime) {
+
+    let seconds = Math.floor(screenTime);
+    let hours = Math.floor(seconds / 3600);
+    let minutes = Math.floor((seconds % 3600) / 60);
+    let remainingSeconds = seconds % 60;
+
+    this.statsGroup.querySelector("#firefoxxo-screen-time").innerText = `${hours} hours, ${minutes} minutes, ${remainingSeconds} seconds`;
+
+  }
+
+  switchTab(tab) {
+    this.searchGroup.style.display = tab === "Search" ? "flex" : "none";
+    this.clipboardGroup.style.display = tab === "Clipboard" ? "flex" : "none";
+    this.statsGroup.style.display = tab === "Stats" ? "flex" : "none";
+  }
+
 
   updateDisplay(show) {
     this.panel.style.display = show ? "flex" : "none";
 
     const boundingBox = this.panel.getBoundingClientRect();
     const x = boundingBox.x;
-
-    console.log(x, x + boundingBox.width, window.innerWidth);
 
     if (x < 0) {
       this.panel.className = "right";

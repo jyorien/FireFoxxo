@@ -1,6 +1,17 @@
 
-/* Hover Panel Styling */
+#firefoxxo-overlay * {
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+}
 
+#firefoxxo-overlay {
+  z-index: 9999999999999999999;
+}
+
+/* Hover Panel Styling */
 #firefoxxo-hover-panel {
   height: 2rem;
   width: 4rem;
@@ -40,18 +51,16 @@
 
 /* Panel Styling */
 #firefoxxo-panel {
-  height: 200px;
-  width: 400px;
+  width: 360px;
+  padding-bottom: 1.4rem;
 
   position: absolute;
-  top: -200px;
+  top: -175px;
   margin: auto;
 
   display: none;
-  align-items: center;
-  justify-content: center;
 
-  background-color: white;
+  background: linear-gradient(180deg, orange 65%, white 35%);
   border: 3px solid orange;
   border-radius: 1rem;
   pointer-events: all;
@@ -97,5 +106,193 @@
   bottom: 0.5rem;
   left: 0.5rem;
 
+  color: black;
+}
+
+/* Firefoxxo Tabs */
+#firefoxxo-foxxo-tabs {
+  position: absolute;
+  display: flex;
+  top: -2rem;
+  gap: 0.5rem;
+  margin: 0.4rem;
+}
+
+.firefoxxo-foxxo-tab {
+  height: 2rem;
+  width: 5rem;
+  background-color: white;
+  position: relative;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+.firefoxxo-foxxo-tab button {
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+  border-radius: 1rem;
+  border: 3px solid orange;
+  border-bottom-left-radius: 0%;
+  border-bottom-right-radius: 0%;
+  background-color: white;
+  color: black;
+  position: relative;
+}
+
+.firefoxxo-foxxo-tab button {
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+  border-radius: 1rem;
+  border: 3px solid orange;
+  border-bottom-left-radius: 0%;
+  border-bottom-right-radius: 0%;
+  background-color: white;
+  color: black;
+  position: relative;
+}
+
+.firefoxxo-foxxo-tab button.active {
+  background-color: orange;
+  color: white;
+}
+
+.firefoxxo-tab-foxxo {
+  height: 64px;
+  width: 64px;
+  overflow: hidden;
+  position: relative;
+  display: none;
+  top: -96px;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.active + .firefoxxo-tab-foxxo {
+  display: block;
+}
+
+/* Firefoxxo Search Group */
+#firefoxxo-search-group {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0.8rem;
+}
+
+#firefoxxo-search-group input {
+  height: 1.2rem;
+  padding: 0.5rem;
+  border: 2px solid orange;
+  border-radius: 0.5rem;
+  background-color: white;
+  color: black;
+}
+
+#firefoxxo-buttons-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+#firefoxxo-buttons-group button {
+  padding: 0.5rem;
+  cursor: pointer;
+  border: 2px solid orange;
+  border-radius: 0.5rem;
+  background-color: white;
+  color: black;
+  transition: all 0.1s;
+}
+
+#firefoxxo-buttons-group button:hover {
+  transform: scale(1.05);
+  transition: 0.1s; 
+}
+
+#firefoxxo-buttons-group button:active {
+  transform: scale(0.95);
+  transition: 0.1s; 
+}
+
+/* Firefoxxo Clipboard Scroller */
+
+#firefoxxo-clipboard-group {
+  width: 100%;
+}
+
+#firefoxxo-clipboard-scroller {
+  height: 132px;
+  max-width: calc(360px - 2rem);
+
+  flex-shrink: 0;
+  flex-grow: 1;
+  margin: 1rem;
+
+  display: grid;
+  grid-auto-flow: column;
+  gap: 1rem;
+  overflow-y: hidden;
+  overflow-x: scroll;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+}
+
+#firefoxxo-clipboard-entry {
+  color: black;
+  position: relative;
+  max-height: 90px;
+  overflow-y: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+  width: calc(360px - 3rem);
+  padding: 0.5rem;
+  background-color: #fffa;
+  scroll-snap-align: center;
+  border-radius: 1rem;
+}
+
+#firefoxxo-clipboard-btn-row {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0.5rem;
+}
+
+#firefoxxo-clipboard-btn-row button {
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border-radius: 1rem;
+  border: 2px solid orange;
+  background-color: white;
+  color: black;
+  transition: all 0.1s;
+}
+
+#firefoxxo-clipboard-btn-row button:hover {
+  transform: scale(1.05);
+  transition: all 0.1s;
+}
+
+#firefoxxo-clipboard-btn-row button:active {
+  transform: scale(0.95);
+  transition: all 0.1s;
+}
+
+/* Firefoxxo Stats Panel */
+#firefoxxo-stats-group {
+  height: 132px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0.8rem;
   color: black;
 }
