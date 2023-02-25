@@ -5,5 +5,14 @@ browser.runtime.onMessage.addListener((message) => {
     }
 })
 
-// put in content scripts
-// browser.runtime.sendMessage({"url": "mozilla", "engine": "Bing"})
+let enginesList
+// broadcast list of search engines available for content scripts
+browser.search.get()
+.then((result) => {
+    enginesList = result.map(result => result.name)
+    browser.tabs.query({active: true}).then((res) => {
+    // send list of engines to content script to display
+    browser.tabs.sendMessage(res[0].id ,{"enginesList": enginesList})
+    })
+    
+})

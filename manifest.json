@@ -15,7 +15,7 @@
     "content_scripts": [
       {
         "matches": ["*://*/**"],
-        "js": ["content_scripts/clipboard.js"]
+        "js": ["content_scripts/clipboard.js", "content_scripts/search.js"]
       }
     ],
 
